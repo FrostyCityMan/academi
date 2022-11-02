@@ -5,12 +5,15 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -81,5 +84,17 @@ public class MediagroupDAO {
 
         }
         return total;
+    }
+
+    @RequestMapping(value = "/mediagroup/list.do", method = RequestMethod.GET)
+    public List<MediagroupDTO> paging(int startNum, int endNum) {
+        List<MediagroupDTO> paigng = null;
+        try {
+            sql = new StringBuilder();
+
+        } catch (Exception e) {
+
+        }
+        return paigng;
     }
 } // class end

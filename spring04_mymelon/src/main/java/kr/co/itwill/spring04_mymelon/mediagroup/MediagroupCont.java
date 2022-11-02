@@ -7,7 +7,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+
+import java.util.*;
+
+import static com.sun.tools.attach.VirtualMachine.list;
 
 @Controller
 public class MediagroupCont {
@@ -19,7 +23,7 @@ public class MediagroupCont {
     public MediagroupCont() {
         System.out.println("-----MediagroupCont() 객체 생성됨");
     } // end
-    
+
     // 미디어그룹 쓰기 페이지 호출
     // http://localhost:9095/mediagroup/create.do
     @RequestMapping(value = "/mediagroup/create.do", method = RequestMethod.GET)
@@ -32,7 +36,7 @@ public class MediagroupCont {
         ModelAndView mav = new ModelAndView();
 
         int cnt = dao.create(dto);
-        if(cnt == 0) {
+        if (cnt == 0) {
             mav.setViewName("mediagroup/msgView");
             String msg1 = "<p>미디어 그룹 등록 실패</p>";
             String img = "<img src='../images/fail.png' style='width:100px;'>";
@@ -49,13 +53,50 @@ public class MediagroupCont {
         return mav;
     } // createProc() end
 
-    @RequestMapping(value = "mediagroup/list.do", method = RequestMethod.GET)
-    public ModelAndView list() {
+    @RequestMapping(value = "/mediagroup/list.do")
+    public ModelAndView list(HttpServletRequest req) {
         ModelAndView mav = new ModelAndView();
-        mav.setViewName("mediagroup/list");
-        List<MediagroupDTO> list=dao.list();
+        mav.setViewName("mediagroup/list.do");
+        int totalRowCount = dao.totalRowCount();
+        int numPerPage = 5;
+        int pagePerBlock = 10;
+        String pageNum = req.getParameter("pageNum");
+        if (pageNum == null) {
+            pageNum = "1";
+        }
+
+        int startRow = ((Integer.parseInt(pageNum) - 1) * numPerPage) + 1;
+        int endRow = Integer.parseInt(pageNum) * numPerPage;
+        //페이지수
+        double totcnt = (double) totalRowCount / numPerPage;
+        int totalpage = (int) Math.ceil(totcnt);
+
+
+        List list = null;
+        if (totalRowCount > 0) {
+            list = dao.paging(startRow, endRow);
+        } else {
+            list = Collections.emptyList();
+        }
+        mav.addObject("count", totalRowCount);
         mav.addObject("list", list);
+        mav.addObject("totalpage", totalpage);
+        mav.addObject("pageNum", pageNum);
+        mav.addObject("statPage", startPage);
+
         return mav;
-    }//end of list
+    }
+
+
+//    @RequestMapping(value = "mediagroup/list.do", method = RequestMethod.GET)
+//    public ModelAndView list() {
+//        ModelAndView mav = new ModelAndView();
+//        mav.setViewName("mediagroup/list");
+//        List<MediagroupDTO> list = dao.list();
+//        mav.addObject("list", list);
+//        mav.addObject("count", dao.totalRowCount());
+//        return mav;
+//    }//end of list
+
 
 } // class end
