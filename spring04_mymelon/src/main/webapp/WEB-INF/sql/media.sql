@@ -22,3 +22,12 @@ from media
 where mediagroupno = ?
   and mview = 'Y'
 order by mediano desc;
+
+
+SELECT AA.*
+FROM (SELECT ROWNUM as RNUM, BB.*
+      FROM (SELECT mediagroupno, title
+            FROM mediagroup
+            ORDER BY mediagroupno DESC) BB) AA
+WHERE AA.RNUM >= 5
+  AND AA.RNUM <= 6;
