@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="product">
+    <select id="list" resultType="java.util.Map">
+        SELECT PRODUCT_CODE, PRODUCT_NAME, DESCRIPTION, PRICE, FILENAME
+        FROM PRODUCT
+        ORDER BY PRODUCT_NAME
+    </select>
+    <insert id="insert">
+        INSERT Into PRODUCT(product_code, product_name, description, price, filename, filesize)
+        VALUES (product_seq.nextval, #{product_name}, #{description}, #{price}, #{filename}, #{filesize})
+    </insert>
+    <select id="select" resultType="java.util.Map">
+        Select product_code, product_name, description, price, filename
+        FROM PRODUCT
+        where PRODUCT_NAME like #{product_name}
+        order by product_name
+    </select>
+    <select id="detail" resultType="java.util.Map">
+        SELECT product_code, product_name, description, price, filename, filesize
+        FROM product
+        WHERE product_code = #{product_code}
+    </select>
+
+    <update id="update">
+        Update PRODUCT
+        set product_name=#{product_name},
+            price=#{price},
+            description=#{description},
+            filename=#{filename},
+            filesize=#{filesize}
+        Where product_code = #{product_code}
+    </update>
+
+    <select id="filename" resultType="String">
+        SELECT filename
+        FROM product
+        where product_code = #{product_code}
+    </select>
+
+    <delete id="delete">
+        DELETE
+        FROM product
+        WHERE product_code = #{product_code}
+    </delete>
+</mapper>
